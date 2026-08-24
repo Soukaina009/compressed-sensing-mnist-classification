@@ -56,8 +56,8 @@ Une feuille scientifique détaillée retraçant le cadre théorique, les équati
 
 ## 🛠️ Installation & Exécution
 
-### Prérequis
+### Cloner le projet & Installer les dépendances
 ```bash
-git clone [https://github.com/Soukaina009/compressed-sensing-mnist-classification](https://github.com/Soukaina009/compressed-sensing-mnist-classification.git)
+git clone [https://github.com/Soukaina009/compressed-sensing-mnist-classification.git](https://github.com/Soukaina009/compressed-sensing-mnist-classification.git)
 cd compressed-sensing-mnist-classification
 pip install -r requirements.txt
