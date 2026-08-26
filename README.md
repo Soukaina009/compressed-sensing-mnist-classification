@@ -19,23 +19,28 @@ Can we cut the size of MNIST images by more than half and still classify digits 
 The project compares three strategies:
 
 1. **Baseline LDA**: trains directly on the raw 784-pixel image (28x28).
-2. **Compressed Sensing – Direct Classification**: a random Gaussian projection reduces each image from 784 to 250 measurements ($y = \Phi x$). LDA then classifies directly on these 250 compressed values, with no reconstruction step.
-3. **Compressed Sensing – Reconstruction (OMP)**: the same 250 compressed measurements are used, but the image is first reconstructed with Orthogonal Matching Pursuit (OMP) before LDA classifies it.
+2. **Compressed Sensing – Direct Classification (Approach A)**: a random Gaussian projection reduces each image from 784 to about 225 measurements ($y = C \cdot x$), a number computed automatically from the wavelet sparsity of the images. LDA then classifies directly on these compressed values, with no reconstruction step.
+3. **Compressed Sensing – Reconstruction (Approach B, via OMP)**: the same compressed measurements are used, but the image is first reconstructed with Orthogonal Matching Pursuit (OMP) before LDA classifies it.
 
-The compression relies on the fact that MNIST images are sparse in the wavelet domain (Haar / Daubechies), which is what makes accurate compressed measurement possible.
+To find the best number of measurements, the project first tests three wavelet families (Haar, Daubechies 2, Symlet 2) and picks the one that packs the most energy into the fewest coefficients. This sparsity level is what makes accurate compressed measurement possible, and it directly sets how many measurements the "sensor" needs to take.
 
 ## Results
 
-| Strategy | Input Dimension | Compression | Test Accuracy | Speed |
-|---|---|---|---|---|
-| Baseline (raw pixels) | 784 | 0% | **83.80%** | Standard |
-| CS – Direct Classification | 250 | 68.2% | 81.50% – 82.50% | Fast (no reconstruction step) |
-| CS – Reconstruction (OMP + LDA) | 250 → 80 coefficients | 68.2% | ~80.00% | Slow (OMP reconstruction is costly) |
+| Metric | Baseline (No CS) | CS – Direct Classification (A) | CS – Reconstruction via OMP (B) |
+|---|---|---|---|
+| Input dimension | 784 variables | **225 variables** | ~784 variables recovered |
+| Storage required | 100% | **~28.7% (71.3% saved)** | ~35% at capture |
+| Runtime | ~0.12 s | **~0.03 s** (instant) | ~15.50 s (OMP reconstruction) |
+| Train accuracy | 92.73% | **89.65%** | ~85.00% |
+| Test accuracy | 83.80% | **86.20%** | ~80.00% |
+| Train/test gap | 8.93% | **3.45%** | ~5.00% |
+| Generalization | Slight overfitting | **Excellent** | Moderate |
 
 **Main takeaways:**
 
-- The direct classification approach cuts data volume by close to 70% and loses only about 1.5 points of accuracy compared to the baseline.
-- Skipping reconstruction and classifying the compressed data directly is both faster and more accurate than reconstructing the image first.
+- The direct classification approach (A) removes 71.3% of the input data and still scores *higher* on the test set than the full-resolution baseline (86.20% vs. 83.80%). The wavelet compression filters out high-frequency noise, so the model overfits less and generalizes better.
+- Approach A is also about 4x faster to run than the baseline, and roughly 500x faster than reconstructing the image first (Approach B), since it skips the costly OMP optimization step entirely.
+- Reconstructing the image before classifying (Approach B) is the slowest and least accurate option here — for this task, going straight from compressed measurements to a prediction is the better strategy.
 
 ## Tech Stack
 
@@ -76,9 +81,9 @@ The notebook loads MNIST, runs all three strategies, and prints the accuracy and
 
 ## Report
 
-For the full theory behind this project, including the Restricted Isometry Property (RIP), the sparsity assumptions, and the complete experimental setup, see `Direct Classification in the Compressed Domain.pdf` in this repository.
+I wrote a full report for this project: `Direct Classification in the Compressed Domain.pdf`. It covers the theory behind compressed sensing, including the Restricted Isometry Property (RIP) and the sparsity assumptions, along with the complete experimental setup and analysis of the results above.
 
 ## Author
 
-Built by **Zemzam Soukaina**, Master's student in AI for the Digital Economy and Management.
+Built by **Soukaina**, Master's student in AI for the Digital Economy and Management.
 [GitHub](https://github.com/Soukaina009) · [LinkedIn](https://www.linkedin.com/in/soukaina-zemzam-585b8a3aa/?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3BEMOBq%2F32RqGeLJ3s2tgDYQ%3D%3D) · [Email](zemzamsoukaina@gmail.com)
