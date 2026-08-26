@@ -81,7 +81,7 @@ The notebook loads MNIST, runs all three strategies, and prints the accuracy and
 
 ## Report
 
-I wrote a full report for this project: `Direct Classification in the Compressed Domain.pdf`. It covers the theory behind compressed sensing, including the Restricted Isometry Property (RIP) and the sparsity assumptions, along with the complete experimental setup and analysis of the results above.
+I wrote a full report for this project: `Direct Classification in the Compressed Domain.pdf/(https://github.com/Soukaina009/compressed-sensing-mnist-classification/blob/main/Direct%20Classification%20in%20the%20Compressed%20Domain.pdf)`. It covers the theory behind compressed sensing, including the Restricted Isometry Property (RIP) and the sparsity assumptions, along with the complete experimental setup and analysis of the results above.
 
 ## Author
 
